@@ -1,406 +1,409 @@
-\documentclass[10.5pt,compsoc]{CjC}
-\usepackage{CJKutf8}
-%\usepackage{CJK}
+% !TeX encoding = UTF-8
+% !TeX program = xelatex
+% !TeX spellcheck = en_US
+
+\documentclass{cjc}
+\usepackage{hyperref}
 \usepackage{graphicx}
-\usepackage{footmisc}
-\usepackage{subfigure}
-\usepackage{url}
-\usepackage{multirow}
-\usepackage[noadjust]{cite}
-\usepackage{amsmath,amsthm}
-\usepackage{amssymb,amsfonts}
 \usepackage{booktabs}
-\usepackage{color}
-\usepackage{ccaption}
-\usepackage{booktabs}
-\usepackage{float}
-\usepackage{fancyhdr}
-\usepackage{caption}
-\usepackage{xcolor,stfloats}
-\usepackage{comment}
-\setcounter{page}{1}
-\graphicspath{{figures/}}
-\usepackage{cuted}%flushend,
-\usepackage{captionhack}
-\usepackage{epstopdf}
-%\usepackage{ccmap}
-%\CJKtilde
-%\usepackage{CJKpunct} 
-%\usepackage[lite,subscriptcorrection,slantedGreek,nofontinfo]{mtpro2}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{siunitx}
+\usepackage{silence}
+\hbadness=10000 \vbadness=10000 
+\WarningFilter{Fancyhdr}{\headheight is too small}
 
-%===============================%
+\classsetup{
+  % 配置里面不要出现空行
+  title        = {基于遗传算法的旅行商优化问题解决方案（附带代码实现）},
+  title*={The solution of travel salesman optimization problem based on genetic algorithm}
+   ,
+  authors      = {
+    author1 = {
+      name         = {胡奥},
+      name*        = {Hu Ao},
+       affiliations = {},
+      biography    = {男，2004年生，本科在读，武大学生，，},
+      % 英文作者介绍内容包括：出生年, 学位(或目前学历), 职称, 主要研究领域(与中文作者介绍中的研究方向一致).
+      biography*   = {,,, },
+      email        = {2454634713@qq.com},
+      phone-number = {13636096989},  % 第1作者手机号码(投稿时必须提供，以便紧急联系，发表时会删除)
+    }
+  },
+  % 论文定稿后，作者署名、单位无特殊情况不能变更。若变更，须提交签章申请，
+  % 国家名为中国可以不写，省会城市不写省的名称，其他国家必须写国家名。
+  affiliations = {
+    aff1 = {
+      name  = {2022303061055},
+      name* = {2022303061055},
+    }
+  },
+  abstract     = {
+    旅行商问题是组合优化问题里的经典问题，在现实生活里具有重要的研究价值，
+    首先本文将就旅行商问题为例，进行数学建模并介绍其数学特性；然后将总结介绍一下课堂内外所学的神经网络
+    ，进化的遗传算法，梯度下降算法，群智能的粒子群算法和蚁群算法等等优化算法的算法的背景来源、思想原理、
+    在优化问题里的适用范围以及优缺点；在了解各类优化算法的基础之上，设计算法对旅行商问题进行优化操作，
+    并通过代码实现来进一步验证其可行性，然后综合典型评价方案来辩证地描述其遗传算法的优势以及其局限性；
+    调研总结分类各类优化问题，并以其中几类为例简要分析其主流解决方案的优缺点；最后总结这次方案设计，
+    提出进一步的优化方案。
+  },
+  abstract*    = {Traveling salesman problem is a classic problem in combinatorial optimization problem, which has important research value in real life. Firstly, this paper will take traveling salesman problem as an example, carry on the mathematical modeling and introduce its mathematical characteristics;then will summarize and introduce the background source, thought principle, application range and advantages and disadvantages of the neural network, evolutionary genetic algorithm, gradient descent algorithm, swarm intelligence particle swarm optimization algorithm and ant colony algorithm and so on.On the basis of understanding all kinds of optimization algorithms, design algorithms to optimize the operation of traveling salesman problem, and further verify its feasibility through code realization, and then dialectically describe the advantages and limitations of genetic algorithms by integrating typical evaluation schemes; investigate and summarize all kinds of optimization problems, and take several types as an example to briefly analyze the advantages and disadvantages of the mainstream solutions;finally summarize the design of this scheme, and put forward further optimization schemes.},
+  % 中文关键字与英文关键字对应且一致，应有5-7个关键词，不要用英文缩写
+  keywords     = {旅行商问题, 遗传算法,优化,优缺点},
+  keywords*    = {Traveling salesman problem, genetic algorithm, optimization, advantages and disadvantages},
+  grants       = { },
+  % clc           = {TP393},
+  % doi           = {10.11897/SP.J.1016.2020.00001},  % 投稿时不提供DOI号
+  % received-date = {2019-08-10},  % 收稿日期
+  % revised-date  = {2019-10-19},  % 最终修改稿收到日期，投稿时不填写此项
+  % publish-date  = {2020-03-16},  % 出版日期
+  % page          = 512,
+}
 
-%\firstfootname{ \quad \quad }
-\headevenname{\mbox{\quad} \hfill  \mbox{\zihao{-5}{\begin{CJK*}{GBK}{song}��\quad \quad ��\quad \quad ��\quad \quad ѧ\quad \quad ��\end{CJK*}} \hspace {50mm} \mbox{\begin{CJK*}{GBK}{song}2019 ��\end{CJK*}}}}%
-\headoddname{\begin{CJK*}{GBK}{song}? �� \hfill
-�������ֵȣ�������Ŀ\end{CJK*}}%
+\newcommand\dif{\mathop{}\!\mathrm{d}}
 
-%footnote use of *
-\renewcommand{\thefootnote}{\fnsymbol{footnote}}
-\setcounter{footnote}{0}
-\renewcommand\footnotelayout{\zihao{5-}}
+% hyperref 总是在导言区的最后加载
+\usepackage{hyperref}
 
-\newtheoremstyle{mystyle}{0pt}{0pt}{\normalfont}{1em}{\bf}{}{1em}{}
-\theoremstyle{mystyle}
-\renewcommand\figurename{figure~}
-\renewcommand{\thesubfigure}{(\alph{subfigure})}
-\newcommand{\upcite}[1]{\textsuperscript{\cite{#1}}}
-\renewcommand{\labelenumi}{(\arabic{enumi})}
-\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
-\newcommand{\abc}{\color{white}\vrule width 2pt}
-\makeatletter
-\renewcommand{\@biblabel}[1]{[#1]\hfill}
-\makeatother
-\setlength\parindent{2em}
-%\renewcommand{\hth}{\begin{CJK*}{GBK}{hei}}
-%\renewcommand{\htss}{\begin{CJK*}{GBK}{song}}
 
 
 \begin{document}
-\hyphenpenalty=50000
-\makeatletter
-\newcommand\mysmall{\@setfontsize\mysmall{7}{9.5}}
-\newenvironment{tablehere}
-  {\def\@captype{table}}
 
-\let\temp\footnote
-\renewcommand \footnote[1]{\temp{\zihao{-5}#1}}
+\maketitle
 
 
-\thispagestyle{plain}%
-\thispagestyle{empty}%
-\pagestyle{CjCheadings}
+\section{优化问题}
 
-\begin{table*}[!t]
-\vspace {-13mm}
-\begin{tabular}{p{168mm}}
-\zihao{5-}\begin{CJK*}{GBK}{song}
-��??��\quad ��?�� \hfill ��\quad ��\quad ��\quad ѧ\quad ��\hfill Vol. ??  No. ?\end{CJK*}\\
-\zihao{5-}\begin{CJK*}{GBK}{song}
-20??��?�� \hfill CHINESE JOURNAL OF COMPUTERS \hfill ???. 20??\end{CJK*}\\
-\hline\\[-4.5mm]
-\hline\end{tabular}
+\subsection{课题背景及介绍}
+基于现成搜集的数据集，我将以下问题作为我的课题。假设有100个地点，并且知
+道这些地点的经纬度，我方有一个基地，经纬度为（0，0），现在我方在起始地点有一
+架飞机，需要在侦查完所有目标后再返回。并且每个地点能经过一次，目的是这次行程最短时间。
+\subsection{课题意义}
+现实生活中这是一个较为典型的图论问题，这个问题所体现的思想不仅仅存在于飞机派遣任务中，
+在现实的快递派送以及旅行规划中也广泛存在，可以说这是一个富有重要实用意义的问题。
+\subsection{建模流程与数学特性}
+这个问题可以被建模成数模中的旅行商问题。在这个问题中，飞机需要访问所有的目标点一次，并在最后返回基地，而且每个目标点只能被
+访问一次。优化的目标是使得整个行程的时间最小化。这里可以用线性规划里的整数规划模型来建模，以下是该问题的数学建模：
 
-\centering
-\vspace {11mm}
-\begin{CJK}{GBK}{hei}
-{\zihao{2} ���£���Ӣ����Ŀһ��)����Ϊ2�ź���(ȫ�ĳ��ر������⣬ ����ͳһ��Times New Roman) }
-\end{CJK}
-\vskip 5mm
-
-{\zihao{3}\begin{CJK*}{GBK}{fs}
-������$^{1)}$\quad  ������$^{2),3)}$ \quad ������$^{3) }$($^*$����Ϊ3�ŷ���*����)\end{CJK*}}
-
-\vspace {5mm}
-\zihao{6}{\begin{CJK*}{GBK}{song}
-$^{1)}$(��λȫ�� ����(ϵ)ȫ��, ��(��ֱϽ��) ������ ��������)
-*����Ϊ6������*��λ
-\end{CJK*}}
-
-\zihao{6}{\begin{CJK*}{GBK}{song}
-$^{2)}$(��λȫ�� ����(ϵ)ȫ��, ��(��ֱϽ��) ������
-��������)*��Ӣ�ĵ�λ���ơ�����������һ��*
-\end{CJK*}}
-
-\zihao{6}{\begin{CJK*}{GBK}{song}
-$^{3)}$(��λȫ�� ����(ϵ)ȫ��, ��(��ֱϽ��) ������ ��������)
-\end{CJK*}}
-
-\zihao{6}{\begin{CJK*}{GBK}{hei}
-���Ķ����������������λ������������ܱ��������������ύǩ�����룬������Ϊ�й����Բ�д��ʡ����в�дʡ�����ƣ��������ұ���д��������
-\end{CJK*}}
-
-\vskip 5mm
-{\centering
-\begin{tabular}{p{160mm}}
-\zihao{5-}{
-\setlength{\baselineskip}{16pt}\selectfont{
-\noindent\begin{CJK*}{GBK}{hei}ժ\quad Ҫ\quad \end{CJK*} \begin{CJK*}{GBK}{song}
-*����ժҪ�������ڴ˴�(Ӣ��ժҪ��Ҫ����Щ����)������ΪС5�����塣ժҪ���ײ��֣�Ҫ������֧�֣���Ҫ����``...������''��``...��������''����������ȷ��������``��{\ldots}���X{\%}''��
-``��{\ldots}�ϸ���X{\%}''��*ժҪ
-
-\end{CJK*}\par}}\\[2mm]
-
-\zihao{5-}{\noindent
-\begin{CJK*}{GBK}{hei}�ؼ���\end{CJK*} \quad \begin{CJK*}{GBK}{song}{*�ؼ��ʣ����Ĺؼ�����Ӣ�Ĺؼ��ֶ�Ӧ��һ�£�Ӧ��5-7���ؼ���)���ؼ��ʣ��ؼ��ʣ��ؼ���*  }
-\end{CJK*}
-}\\[2mm]
-\zihao{5-}{\begin{CJK*}{GBK}{hei}��ͼ�������\end{CJK*}	\begin{CJK*}{GBK}{song}
-TP\end{CJK*}\rm{\quad \quad \quad     }
-\begin{CJK*}{GBK}{hei}DOI��:\end{CJK*}\begin{CJK*}{GBK}{song}
-*Ͷ��ʱ���ṩDOI��\end{CJK*}}
-\end{tabular}}
-
-\vskip 7mm
-
-\begin{center}
-\zihao{3}{ {\begin{CJK*}{GBK}{hei}Title *����Ӣ����Ŀһ��)����Ϊ4��Times New Roman,�Ӵ�* Title\end{CJK*}}}\\
-\vspace {5mm}
-\zihao{5}{ {\begin{CJK*}{GBK}{hei}NAME Name-Name$^{1)}$ NAME Name$^{2)}$ NAME Name-Name$^{3)}$ *����Ϊ5��Times
-new Roman*Name\end{CJK*}
-}}\\
-\vspace {2mm}
-\zihao{6}{\begin{CJK*}{GBK}{hei}{$^{1)}$(Department of ****, University, City ZipCode, China) *����Ϊ6��Times
-new Roman* Depart.Correspond}\end{CJK*}}
-
-\zihao{6}{\begin{CJK*}{GBK}{hei}{$^{2)}$(Department of ****, University, City ZipCode)*�й���д������*}\end{CJK*}}
-
-\zihao{6}{\begin{CJK*}{GBK}{hei}{$^{3)}$(Department of ****, University, City ZipCode, country)*���д������*}\end{CJK*}}
-
-
-
-\end{center}
-
-\begin{tabular}{p{160mm}}
-\zihao{5}{
-\setlength{\baselineskip}{18pt}\selectfont{
-{\bf Abstract}\quad \begin{CJK*}{GBK}{hei}(\textbf{500Ӣ�ĵ��ʣ����ݰ�������ժҪ������}).
-����ΪTimes new Roman,�ֺ�5��* Abstract\end{CJK*}
-\par}}\\
-
-\setlength{\baselineskip}{18pt}\selectfont{
-\zihao{5}{\noindent Do not modify the amount of space before and after the artworks. One- or two-column format artworks are preferred. and Tables, create a new break line and paste the resized artworks where desired. Do not modify the amount of space before and after the artworks. One- or two-column format artworks are preferred. All Schemes, Equations, Figures, and Tables should be mentioned in the text consecutively and numbered with Arabic numerals, and appear below where they are mentioned for the first time in the main text. To insert Schemes, Equations, Figures, and Tables, create a new break line and paste the resized artworks where desired. Do not modify the amount of space before and after the artworks. One- or two-column format artworks are preferred.Do not modify the amount of space before and after the artworks. One- or two-column format artworks are preferred. and Tables, create a new break line and paste the resized artworks where desired. Do not modify the amount of space before and after the artworks. One- or two-column format artworks are preferred. All Schemes, Equations, Figures, and Tables should be mentioned in the text consecutively and numbered with Arabic numerals, and appear below where they are mentioned for the first time in the main text.
-
-\vspace {5mm}
-{\bf Keywords}\quad \begin{CJK*}{GBK}{hei}���Ĺؼ�����Ӣ�Ĺؼ��ֶ�Ӧ��һ�£�\textbf{��Ҫ��Ӣ����д});
-key word; key word; key word* *����Ϊ5��Times new Roman * Key words\end{CJK*}}\par}
-\end{tabular}
-
-\setlength{\tabcolsep}{2pt}
-\begin{tabular}{p{0.05cm}p{16.15cm}}
-\multicolumn{2}{l}{\rule[4mm]{40mm}{0.1mm}}\\[-3mm]
-&\begin{CJK*}{GBK}{gbsn}
-�ո����ڣ�\quad \quad -\quad -\quad �������޸ĸ��յ����ڣ�\quad \quad -\quad -\quad .*Ͷ��ʱ����д����*. ������õ��� ������������������(No.��Ŀ��)���� ������������������(No.��Ŀ��)���� �� ����������������(No.��Ŀ��)����.������1(ͨ������)���Ա�xxxx������ѧλ(��Ŀǰѧ��)��ְ�ƣ���/������ѧ��(CCF)��Ա���ṩ��Ա��),��Ҫ�о�����Ϊ*****��****.E-mail: **************.������2��ͨ������)���Ա�xxxx������ѧλ(��Ŀǰѧ��)��ְ�ƣ���/������ѧ��(CCF)��Ա���ṩ��Ա��),��Ҫ�о�����Ϊ*****��****.E-mail: **************. ������3��ͨ������)���Ա�xxxx������ѧλ(��Ŀǰѧ��)��ְ�ƣ���/������ѧ��(CCF)��Ա���ṩ��Ա��),��Ҫ�о�����Ϊ*****��****.E-mail: **************.(�����ĵ����ʼ���ַӦ�������������ҵ������������λ��ԭ����䶯��������������ߵĵ����ʼ�)
-��1�����ֻ�����(Ͷ��ʱ�����ṩ���Ա������ϵ������ʱ��ɾ��): �� ��, E-mail: �� ��*�˲���6������*
-\end{CJK*}
-\end{tabular}\end{table*}
-\clearpage\clearpage
-\begin{strip}
-\vspace {-13mm}
-\end{strip}
-    \linespread{1.15}
-\begin{CJK*}{GBK}{hei}
-\zihao{5}
-\vskip 1mm
-\section{һ������*����Ϊ4�ź���*����1}
-\textbf{��Ͷ��Ļ���Ҫ��}��
-\end{CJK*}
-
-\begin{CJK*}{GBK}{song}
-(1) �о�����������Ӧ��������(�ص������о��Ŀ�ѧ���⡢���塢���˼·����ֵ�����׵�)����ع���(Ϊ�����Բ��ֶ�����һ���½�)����Ҫ�ɹ��������ؼ�ʵ�ּ�������֤(�Ա�ʵ�������֤��)������(������)�����ݣ�ϵͳʵ�ֻ�ʵ��Ӧ�йؼ������ϸ�������Ա�����ܹ��ظ�ʵ�����������ɹ���ʵ��Ӧ�о����ʵ�黷�����á�ȫ��ϸ�µ����ݶԱȷ�����
-
-(2) ����Ӧ�������ԡ���������ս���о���״������δ���о����򡢽��۵����ݡ��Է������Ա�Ϊ��������������׻�һ���Խ��ܡ�������
-
-(3) ����֤������ʽ�Ƶ�����ƪ������ѧ������ԭʼ���ݣ��ŵ��������ĸ�¼�С�
-
-{\bf ����ύʱ�Ļ���Ҫ��}
-
-(1) ��ģ����Ҫ��ĸ���������ȷ��ȫ������©��
-
-(2) ���ͨ˳�������ġ�Ӣ���﷨���������Ķ����⣬����ʹ����ȷ��ͼ������������
-
-(3) ��ѧ���������ϣ�����������ȷ���󣬸�������ȷ����
-
-{\begin{CJK*}{GBK}{hei}\subsection{�������� *����Ϊ5�ź���*����2}\end{CJK*}}
-\subsubsection{�������� *����Ϊ5������*����3}
-*���Ĳ���, ����Ϊ5������* ��������
-
-\textbf{��������Ҫ�����ͨ˳�����﷨���󣬽ṹ�����������������Ӱ������ˡ������Ķ�����ȫ�����ݡ����¼����������������ر�ע��}��
-
-1) ������ĿӦ��ȷ��ӳ���µ�˼��ͷ������������������������
-
-2) �������֡�Ӣ�ı������﷨����
-
-3) ��ʽ���޷��š�����ʽ����©��û��ͬһ�����ű�ʾ������˼�������
-
-4) ��ѧ��ʹ�õķ��š���������б�壻
-
-5) ʹ�õ������Ϸ���������λ��׼��
-
-6) ʸ��Ϊ���壬����Ϊ���壻
-
-7) �������ʾ�仯������б�壻
-
-8) ͼ���淶�������ߡ�������λ����ȷ(ͼ��������������������������֣���{\ldots}��ͼ1��ʾ)(ע���ݡ�������Ӧ���������ƺͿ̶�ֵ)��
-
-9) �г��Ĳο����ױ��������а�˳�����ã����ο�����˳��������˳��һ�£�������Ϣ��ȫ(��ʽ���ο����ײ���)��
-
-10) �״γ��ֵ���д��д��ȫ�ƣ��״γ��ֵķ������������͡�
-
-11) ͼ��ͼ��˵��������˵��ȫ�������Ļ������š�
-
-\textbf{12) ͼӦΪʸ��ͼ��}
-
-13) ���б�ͷ���ֲ������ġ�
-
-14) ��ʽ�ߴ磺
-
-��׼��10.5��
-
-�±�/�ϱ꣺5.8��
-
-���±�/�ϱ꣺4.5��
-
-���ţ�16��
-
-�η��ţ�10.5��
-
-15) ��ϵ�λ���ñ�׼��ʽ���磺``pJ/bit/m$^{4}$''ӦΪ ``pJ/(bit$\cdot
-$m$^{4})$''
-
-{\begin{CJK*}{GBK}{hei}\textbf{����1}.\end{CJK*}}\quad ******. *��������.*
-
-[``����''��``����''��``����''��``����''�ȵ��Ű��ʽ�����ͬ����ϸ����֤������ʽ�ɷ��ڸ�¼��]
-
-{\begin{CJK*}{GBK}{fs}֤��\end{CJK*}}.\quad  *֤������.* [``�� x''�ȵ��Ű��ʽ��ͬ]
-
-\rightline {֤��.}
-
-\begin{figure}[htbp]
-\centerline{\includegraphics[width=3.15in,height=1.98in]{CJC1.pdf}}
-ͼX\quad  ͼƬ˵�� *����ΪС5�ţ�ͼƬӦΪ�ڰ�ͼ��ͼ�е���ͼҪ����ͼ˵��*
-\label{fig1}
+变量设定：对每一对地点Vi，Vj，定义一个变量Xij来表示是否要从Vi出发访问Vj，Xij为1时表示飞机从Vi飞到Vj，Xij为0时表示
+飞机不从Vi飞到Vj，其中i，j=1,2,...,101。所以Xij取值为
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述861.png}
 \end{figure}
 
-\begin{table}[htbp]
-\centering {\begin{CJK*}{GBK}{hei}��X\quad ��˵�� *��˵�����ú���*\end{CJK*}}
-\vspace {-2.5mm}
-\begin{center}
-\begin{tabular}{ll}
-\toprule
-*ʾ������*&*��1��Ϊ��ͷ,��ͷҪ������* \\
-\hline
-&
- \\
-&
- \\
-&
- \\
-&
- \\
-\bottomrule
-\end{tabular}
-\label{tab1}
-\end{center}
-\end{table}
 
-\begin{CJK*}{GBK}{hei}����X.\end{CJK*}\quad ��������
-
-{\zihao{5-}*�������ѧ�����ķ���������������ΪС5�����壬IF��THEN��α����ؼ���ȫ���ô�д��ĸ�������ͺ���������б��*}
+目标函数：若飞机决定从Vi飞入Vj，则其飞行时间为Cij*Xij，于是飞行总时间（z）可以表达为
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述1003.png}
+\end{figure}
+，其中，若i=j，则Cij=M，M为事先规定的充分大实数，i，j=1,2,...,101。
 
 
-\begin{CJK*}{GBK}{hei}�㷨\textbf{Y}\end{CJK*}.\quad �㷨����.
-\zihao{5-}{
+约束条件：
+（1）每个地点恰好只进入一次：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述1265.png}
+\end{figure}
 
-\noindent ���룺{\ldots} {\ldots}
+（2）每个地点也只离开一次：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述1160.png}
+\end{figure}
 
-\noindent �����{\ldots} {\ldots}
+（3）为了防止在遍历过程中出现无法返回出发点的情形，这里需要额外加上一个约束条件：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述1306.png}
+\end{figure}
 
-*�������ѧ�������㷨��������ΪС5������, IF��THEN��α����ؼ���ȫ���ô�д��ĸ�������ͺ���������б��*}
+（4）式中U1=0,Ui小于和等于100且Ui大于和等于1(i=2,3,...,101),。
+综上所述，这个问题建模的模型如下：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述1370.png}
+\end{figure}
 
-\vspace {3mm}
-\zihao{5}{
-\noindent \begin{CJK*}{GBK}{hei}��\quad л\end{CJK*}\quad \begin{CJK*}{GBK}{kai} *��л����.* ��л\end{CJK*}}
+除了以上数学特性之外，旅行商问题还具有以下数学特性：
+
+（1）旅行商问题属于NP- hard问题，没有算法可以在短时间内遍历所有情况，所以我们这里只能尽量靠近最优解，采用近似最优解的算法；
+
+（2）从i到j的路径和从j到i的路径是相同的，所以具有对称性，这一点可以减少计算；
+
+（3）旅行商问题属于组合优化问题。数据量的增多，会带来计算量的急剧增长，因为精确解决TSP的计算成本会随着城市数量的增加而急剧增加，所以后面我将采用遗传算法来优化这个问题；
+
+（4）旅行商问题也是整数规划的问题，由于路径决策变量是有或无两个结果，所以这个问题也可以表示为整数规划问题。
+
+\section{计算智能方法综述}
+\subsection{神经网络算法}
+\subsubsection{神经网络背景与算法原理}
+神经网络包含生物神经网络和人工神经网络，生物神经网络主要研究脑和其他神经系统的作用原理和作用机制，人工神经网络则主要研究其功能，而人工神经网络研究通过神经网络算法来实现。神经网络是机器学习里常见的一种非线性算法模型，这个算法因为其模型类似神经系统而得名。这里将对神经网络的模型结构和算法原理进行简要的总结分析说明，着重并讨论其在优化问题中的适用范围和优缺点。
+
+以一种常见的神经网络模式即多层前传网络为例介绍这个算法模型的大概结构，神经网络的模型构成分为三层，输入层，隐藏层和输出层，其中输入层用来表示输入，隐藏层用来让机器进行数据训练的过程，输出层用来输出结果，而隐藏层又可以分为很多层（这里在理论上隐藏层只用一层就可以表示数据处理过程，但是实际过程中数据的处理往往通过多次修改叠加而逐渐改良的过程，所以在实际过程中往往采用多层更为方便）。
+
+神经网络算法里较为典型的是BP神经网络模型和径向基函数神经网络，下图是BP神经网络算法结构：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述2081.png}
+\end{figure}
 
 
-\vspace {5mm}
-\centerline
-{\zihao{5}
-\begin{CJK*}{GBK}{hei}��~��~��~��\end{CJK*}}
+\subsubsection{神经网络优点}
+（1）具有强大的表达能力，只要训练量足够大就可以足够贴合地表示出来，并且还可以自动学习对象的特征来表示，在大规模数据和复杂任务很有效。
 
-\begin{thebibliography}{99}
-\zihao{5-} \addtolength{\itemsep}{-1em}
-\vspace {1.5mm}
+（2）可以进行并行计算，这样可以加快计算速度。
 
-\bibitem[1]{1}
-���ϵ�����(������The Cooperative
-Association for Internet Data Analysis(CAIDA),http://www.caida.org/data
-2010,7,18) \textbf{*����ý�ע�������ĳ��ִ���ÿҳ�Ľ�ע��1��ʼ�����*}\footnote{The Cooperative Association for Internet Data
-Analysis (CAIDA), http://www.caida.org/data 2010, 7, 18}
+（3）可以进行动态学习，在其训练的过程中可以在持续输入新数据的情况下不断更新权值，对于需要实时计算的任务很合适。
 
-\bibitem[2]{2} ���ĵĲο������������Ӣ�Ķ��ա���ʽ��[3]��
+\subsubsection{神经网络缺点}
+（1）因为与目标的贴合性太好，所以相应地对数据的依赖较强，很容易收到故障数据的影响，非常容易陷入局部最优解的陷阱；
 
-\bibitem[3]{3} Zhou Yong-Bin, Feng Deng-Guo. Design and analysis of cryptographic
-protocols for RFID. Chinese Journal of Computers, 2006, 29(4): 581-589 (in
-Chinese) \newline
-(������, ��ǹ�. RFID��ȫЭ�����������. �����ѧ��, 2006, 29(4): 581-589)
+（2）训练过程需要时间较长，而且网络结构和超参数的选择通常需要经验或者计算资源，因此对于大规模的数据其花费的时间和计算资源会很多。
 
-\bibitem[4]{4} �ڿ������顢�鼮���Ʋ�������д��
+\subsubsection{神经网络适用范围}
+所以综合以上内容可以得到，在处理优化的问题上，神经网络算法在处理复杂的非线性映射问题、图像处理和自然语言处理等任务上表现出色。
 
-\bibitem[5]{5} ����(���������ǰ�����ں����д, ��ͬ).
-��Ŀ(Ӣ����Ŀ��һ��ĸ��д��������Сд)��������(�����). ����(ȫ��), ��,
-��(��): ҳ�� \textbf{*�ڿ����ĸ�ʽ*}
+\subsection{梯度下降算法}
+\subsubsection{梯度下降算法背景与算法原理}
+在课本中虽然没有特别将梯度下降算法作为一节内容来详细介绍，但是梯度算法其实是一个很重要的算法，很多优化算法都受梯度下降算法启发而诞生的，如：AdaGrad、RMSProp、Momentum算法。接下来我将简要总结分析一下梯度下降算法的原理然后着重讨论其优缺点和在优化问题的适用范围。
 
-\bibitem[6]{6}����.
-������Ŀ(Ӣ����Ŀ��1��ĸ��д��������Сд)��������(�����)//Proceedings of
-the {\ldots} (��������). �����ٿ�����, �����ٿ��������ڹ���, ��: ҳ��
-\textbf{*�������ļ����ĸ�ʽ*}
+梯度下降算法功能是寻找误差最小值。在梯度下降模型里，我们将误差点处当做谷底来处理，我们通过当前数据所处地点的坡度（梯度）来预测谷底的位置，并通过迭代的方式不断向谷底前进，依次来寻找损失函数最小值点，如下图模型所示，在这过程中还可以通过加入阻尼（动量）来改良向谷底移动寻找的方法：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述2721.png}
+\end{figure}
 
-\bibitem[7]{7}����. ������Ŀ(Ӣ����Ŀ��һ��ĸ��д, ������Сд):
-������(�����)//����. �ļ�����. �����: ������, ������: ҳ��
-\textbf{*�ļ���ʽ*}
+\subsubsection{梯度下降优点}
+梯度下降算法的优点是在目标函数可导的情况下，梯度方法通常能够快速收敛，尤其在局部凸优化问题上表现良好。
 
-\bibitem[8]{8}����. ����: ������(�����). ���(���治д). ������ص�: ������,
-������ \textbf{*�鼮��ʽ*}
+\subsubsection{梯度下降缺点}
+（1）当损失函数不是凸函数时，梯度下降法所得到的可能是局部最优解。所以容易陷入局部最优解的陷阱。
 
-\bibitem[9]{9}����. ������Ŀ[��ʿѧλ����/˶ʿѧλ����]. ��λ����,��λ�ص�, ��
-\textbf{*ѧλ���ĸ�ʽ*}
+（2）梯度下降算法对参数的设定很敏感。以学习率为例，如果学习率设定过大，得到的结果在相邻两代间可能差距很大，不够平缓，让结果“震荡”。学习率设置过小又会让计算量变大。
 
-\bibitem[10]{10}����. ������Ŀ(Ӣ����Ŀ��һ��ĸ��д��������Сд). ��λ�ص�: ��λ,
-��������: ������, �� \textbf{*��������*}
+\subsubsection{梯度下降适用范围}
+所以梯度下降算法适用于求单个目标的误差值最小。但是在后续研究中人们通过添加了自适应算法使梯度下降算法保持了一个较好学习率，并与动量相结合改良了梯度下降算法后得到了一个现代很强大的Adam算法。这种基于梯度下降算法改良后的Adam算法能够处理梯度下降算法不能处理的非凸函数。
 
-\bibitem[11]{11}ר��ӵ����. ר�����ƣ�ר����Ȩ���ң�ר����Ȩ����
-\textbf{*����ר��*}
-  \end{thebibliography}
+\subsection{遗传算法}
+\subsubsection{遗传算法背景与算法原理}
+遗传算法是一种基于生物学原理的算法，它模拟自然界中进化的法则，在另一个人工设计的系统中实现所需任务目标的优化。其本质就是通过搜索算法和适者生存的原则不断迭代进化演化，最终得到近似最优解。遗传算法的大致操作步骤如下：初始群体的产生、将适应度与实际任务所需结合、根据自然选择的适应性原理选择实际任务所需个体、被适应性最高个体两两配对模拟“遗传”的操作，并不断循环。按此方法使群体逐代进化，直到满足进化终止条件。
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述3262.png}
+\end{figure}（遗传算法适应度变化图）
 
-\begin{strip}
-\end{strip}
+\subsubsection{遗传算法优点}
+（1）其他优化算法的优化通常会受到限制性条件的约束，而遗传算法不会受其约束，这是因为遗传算法是一种有导向的随机算法，它的概率随机选择方法使遗传算法避开了局部最小的陷阱。
 
-\noindent {\zihao{5}\bf{��¼X}.}
+（2）搜索操作使用评价函数来启发，过程简单；
 
-{\zihao{5-}\setlength\parindent{2em}
-*\textbf{��¼����}���ڴ˴�������ΪС5�����塣��¼���ݰ�����\textbf{��ϸ�Ķ���֤������ʽ�Ƶ���ԭʼ����}��*}
+（3）具有可扩展性，容易与其他算法结合，这一点非常易于修正遗传算法自身的一些缺点；
 
-\begin{strip}
-\end{strip}
+\subsubsection{遗传算法缺点}
+（1）因为遗传算法具有较强的收敛性，所以在处理一些大计算规模的问题时会让计算时间拉长，经常会出现还没有演化成熟却提前收敛的“早熟收敛”问题；
 
-\begin{biography}[yourphotofilename.jpg]
-\noindent
-\textbf{First A. Author}\ \ *�����ѧ����1�����ṩ��Ƭ����ͼƬ���ߴ�Ϊ1�硣Ӣ�����߽������ݰ�����������,ѧλ(��Ŀǰѧ��),ְ��,��Ҫ�о�����(\textbf{���������߽����е��о�����һ��}).*
-*����ΪС5��Times New Roman*
+（2）是对于初始种群要求也比较严苛，初始种群的选择会影响最终解的质量和算法效率。
 
-\end{biography}
+（4）在计算精度上，计算时间少，鲁棒性高。
+\subsubsection{遗传算法适用范围}
+在优化问题上遗传算法已经十分通用，它既可以解决组合优化问题，也可以解决带约束的优化问题，所以遗传算法在优化问题的适用范围可谓十分广泛。
 
-\begin{biography}[yourphotofilename.jpg]
-\noindent
-\textbf{Second B. Author} *Ӣ�����߽������ݰ�����������,ѧλ(��Ŀǰѧ��),ְ��,��Ҫ�о�����(\textbf{���������߽����е��о�����һ��})��*
-*����ΪС5��Times New Roman*
-\end{biography}
-\begin{strip}
-\end{strip}
-\zihao{5}
-\noindent \textbf{Background}
+\subsection{群智能算法}
+\subsubsection{群智能算法背景与典例}
+群智能源于对以蚂蚁、蜜蜂等为代表的“社会性”生物群体行为的研究。群智能算法是一种具有“生成+检验”特征的迭代搜索算法。群智能算法里比较典型的是蚁群算法（ACO）和粒子群智能算法（PSO）。不同的是，蚁群算法模拟的是蚂蚁觅食原理，而粒子群算法模拟的是鸟类群体行为。下面我将通过这两种群智能算法的原理来简要介绍一下群智能算法，然后着重分析群智能算法的优缺点以及在优化问题中适用范围。
 
-\zihao{5-}{
-\setlength\parindent{2em}
-*���ı�������Ϊ\textbf{Ӣ��}������ΪС5��Times New Roman��*
+\subsubsection{粒群优化算法原理}
+粒群优化算法中，个体被称为粒子。每个粒子代表解空间中的一个潜在解，它具有位置和速度。每个粒子通过比较自身经历的最佳位置和整个群体中最佳位置，来调整其速度和位置。粒子朝着个体和全局最优解的方向移动，直至找到最优解或达到预定的迭代次数。
 
-���ĺ���Ϊ400�������ҵ�Ӣ�ı������ܡ����ܵ����ݰ�����
+下面的一组图很形象地展示了蚁群算法（PSO）的过程：
 
-�����о�������������һ�������ʲô���⡣��������Ŀǰ�����Ͻ����ʲô�̶ȡ�
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述4099.png}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述4101.png}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述4102.png}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述4103.png}
+\end{figure}
 
-���Ľ���������ʲô�̶ȡ�
+\subsubsection{蚁群算法原理}
+蚂蚁在寻找食物源时，可以在路径上释放和感知信息素。信息素浓度的大小表征路径的远近。蚂蚁在寻找过程中遇到分支时会以更大的概率选择信息素浓度高的路径，在不断的感知，选择与释放中使蚂蚁能够找到一条由巢穴到食物源最近的路径。同时随着时间的推移，释放的信息素浓度会降低。因此蚁群有一种特殊的极化现象：有高浓度信息素的路径信息素浓度会不断升高，低浓度信息素的路径信息素浓度会不断降低直至完全消失，这样来达到搜索食物的目的。
+下面一组图简要描述了蚁群算法流程：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.3\textwidth]{graph/综述4317.png}
+\end{figure}
 
-������������Ŀ��
+\subsubsection{群智能算法优点}
+群智能算法是一种依概率搜索的算法，与大多数算法相比，它具有以下的优点：
 
-��Ŀ�����塣
+（1）用的是完全分布式控制来实现个体、环境的相互作用，具有良好的自组织性。
 
-���о�Ⱥ����������������ϵ��о��ɹ���
+（2）个体间的相互作用是通过对环境感觉能力来实现，让系统有很好的可扩展性。
 
-���ĵĳɹ��ǽ��������е���һ���֣�����漰863$\backslash
-$973�Լ�����Ŀ�������о��ƻ���ע����Щ��Ŀ��Ӣ������Ӧ��д��ȷ��}
+（3）没有集中控制的要素，具有很好的鲁棒性，对特殊个例具有包容性，耐噪音。
 
-\end{CJK*}
+（4）系统中单个个体执行时间较短，实现起来很方便，具有简单性。
+
+（5）算法具有并行性特点和分布式特点。
+
+（6）具有很强的全局搜索能力。
+
+\subsubsection{群智能算法缺点}
+（1）算法参数调节比较困难，参数设置如果没有理论依据很可能会导致实验失败，对具体问题和环境要求严格，现在主要都是依靠经验法来确定参数。
+
+（2）收敛速度相对较慢。
+
+（3）对这方面的研究还是较少，数学理论基础相对较为薄弱；
+
+（4）比较性研究不足，缺乏用于性能评估的标准测试集；
+
+\subsubsection{群智能算法适用范围}
+群智能算法在离散和连续求解空间中均表现出良好的搜索效果, 更在组合优化问题中有突出表现，适合处理全局搜索的优化问题。其中蚁群算法可以解决离散系统中优化的困难问题和一些连续问题；而粒群算法在函数优化、约束优化、模式分类、参数优化、组合优化等优化问题中也已经得到广泛的运用。
+
+\section{旅游商问题的优化算法设计}
+\subsection{算法可行性论证}
+这里我将从实践设计流程的讲解来分析论证这个方案的可行性，并补上一个实验进一步验证。这里我这里设计了一个基于遗传算法对旅行商问题进行优化的算法，以下是我的设计：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.45\textwidth]{graph/综述4885.png}
+\end{figure}
+
+因为遗传算法不能直接对旅行商问题里的数据进行处理，所以我们先要将问题表示成适合遗传算法进行的模式，这里我们通过编码将求解的问题表示成遗传空间的染色体和个体，其中每个可行解都是一个个体，每个可行解的编码都是一个染色体，可行解中每一个分量特征代表基因。这可以方便后面进行基因分离，并且统一所有个体用数据来表示。这里我采用的是十进制编码，用随机的数列模拟染色体。要是有需要的话，后续我们还可以通过解码将求得的最终数据重新表示成个体。
+
+初始化种群：这里我采用比较经典的改良圈算法。这里简要说明一下改良圈算法的原理：对于初始产生的路径，我随意交换两点之间的顺序，如果新路径比原路径的长度小则采用这次交换，如果不是则不采用，并且一直进行下去，直到无论如何修改都不能减小时为止。用这个算法就可以得到一个较好的可行解。
+
+适应度和选择：我将目标求解的时间与适应度结合起来，因为目标是最短时间，所以我们这里将用时短来代表遗传算法中适应度高，来让这些路径在后续筛选中出现概率更大（易于存活）。下一步适应度越高的越容易存活，我通过确定性选择的策略选择适应度最小的个体进化到下一代，让优良性状被保留。
+
+交叉与变异：随机选择一对个体，进行染色体交叉，这里的交叉操作，我采用比较简单的单点交叉方式。另外通过将这组数组中随机一个片段插到另一个位置实现变异的操作。
+
+最后重复执行计算适应度、选择、交叉、变异的步骤，不断迭代。当达到停止条件时，算法停止并且返回最优解。将这些路径进行绘图操作方便观察。
+
+\subsection{算法可行性实验验证}
+设计的算法代码运行后结果如下：
+\begin{figure}
+  \centering
+  \includegraphics[width=0.2\textwidth]{graph/综述5531.png}
+  \includegraphics[width=0.2\textwidth]{graph/综述5533.png}
+\end{figure}
+\begin{figure}
+  \centering
+  \includegraphics[width=0.2\textwidth]{graph/综述5534.png}
+  \includegraphics[width=0.2\textwidth]{graph/综述5535.png}
+\end{figure}
+
+
+这里需要注意，每次遗传算法的计算结果都不同，我这里截取了一次的数据进行了演示，实际情况可以运行我在github上传的代码。
+
+\subsection{有效评价方法}
+计算效率，解的质量，收敛性，鲁棒性，可扩展性这五个方面是有效地评价一个设计方案的比较有代表性的对象。接下来我将结合这几点对我设计的方案的优势进行论证，同时对其局限性做辩证的分析。
+
+\subsection{优越性论证}
+TSP的目的是求最短路径，相比于传统解法，遗传算法直接将目标指向距离最短因此更快地得到近似最优解.在原理上，遗传算法容易解决组合优化问题，这里可以将TSP问题当做组合最优问题。遗传算法通过使用选择、交叉和变异等操作来生成新的解，并通过适应度函数评估每个解的质量。每一代中，较优秀的解被选择并用于生成下一代解。在不断迭代中，可以逐步优化解，以此找到一个近似最优解。
+
+（1）这里我在初始化种群时采用了改良圈算法，结合遗传算法通常能够在较短时间内收敛到相对好的解，所以在初期迭代时我就能得到一个较优解。
+
+（2）遗传算法具有全局搜索的能力，可以在大规模的搜索空间中找到较好的解。这是因为遗传算法通过随机性和多样性来遍历搜索空间。这个问题的目的地个数多达100多个，非常适合遗传算法求解。
+
+（3）计算效率高，遗传算法天然适合并行计算，可以通过多个子种群的并行演化来提高搜索效率。遗传算法在处理大规模问题时具有很快的速度，这个问题的目的地点繁多，若采用平常的算法，耗时会比较长，所以采用遗传算法可以在保证近似最优解的同时还具有良好的耗时。
+
+（4）通过设计合适的适应度函数，可以确保算法更有可能找到问题的合理解。在TSP中，适应度函数通常是路径长度。
+
+（5）遗传算法对初始解的依赖性较低，可以处理不同问题结构和初始条件，具有一定的鲁棒性。
+
+\subsection{局限性论证}
+尽管遗传算法适用于组合优化问题，但他也有一些缺点：
+
+（1）参数选择：遗传算法中有许多参数需要进行调整，如种群大小、交叉率、变异率等。不同的参数设置可能导致不同的结果，因此需要进行参数优化，这可能会增加算法的复杂性。一般这里都是采用经验选取参数值。
+
+（2）局部最优解：遗传算法有时可能会陷入局部最优解，无法找到全局最优解。但通过变异操作可以一定程度上避免这个问题，不仅如此后期我们还可以通过优化算法来克服这个问题，可以采用多种启发式策略，如局部搜索、多初始解等。
+
+（3）计算复杂度：遗传算法的计算复杂度较高，特别是在处理大规模问题时。这可能导致算法的运行时间较长，不适用于实时应用或需要快速结果的场景。
+
+（4）尽管处理大规模问题时遗传算法具有较快的速度，但是相应的遗传算法会花费较多的计算资源。
+
+（5）不同于蚁群算法对问题的使用范围十分广泛，遗传算法只针对特定结构的问题合适，比如这里的旅行商问题，对于其他种类的问题，算法的性能可能收到问题结构的影响。
+
+\section{优化问题调研}
+\subsection{优化问题分类}
+优化问题可以分为无约束优化和有约束优化，线性优化和非线性优化，单目标优化和多目标优化，静态规划和动态规划和随机规划，鲁棒规划，连续优化和离散优化，其中离散优化还可以细分为组合优化和整数优化。
+
+\subsection{解决方案和优缺点}
+接下来我将就常见的几种简要地讨论一下其主流解决方案和该方案的优缺点。
+
+\subsubsection{组合优化问题}
+如：旅行商问题 (TSP)：寻找最短路径，使得旅行商访问每个城市一次并回到起始城市。
+
+主流解决方案：动态规划、遗传算法、模拟退火、粒子群优化等。
+
+优点是部分问题规模下，动态规划能够找到最优解；遗传算法等启发式方法对大规模问题有良好的解决能力。
+
+缺点是动态规划在大规模问题上计算复杂度高；启发式方法可能找到次优解。
+
+\subsubsection{连续优化问题}
+如函数优化问题：寻找函数的最小值或最大值。
+
+主流解决方案是： 梯度下降、牛顿法、粒子群优化等。
+
+梯度下降方法优点是在凸函数上有较好的收敛性；粒子群优化方法优点是适用于非凸函数。
+
+但是梯度下降等方法可能陷入局部最优解；粒子群优化等方法在高维空间下计算复杂度较高。
+\subsubsection{整数规划问题}
+如0-1背包问题：在限定容量下选择物品，使得总价值最大化。
+
+主流解决方案是动态规划、分支定界法、启发式算法等。
+
+优点是动态规划在某些情况下能够找到最优解；分支定界法对小规模问题有较好解决能力。
+
+但是动态规划在大规模问题上计算复杂度高；启发式算法可能找到次优解。
+
+\subsubsection{多目标优化问题}
+主流解决方案是多目标遗传算法、多目标粒子群优化等。
+
+优点是能够找到较好的解决方案集合，展现多种权衡的可能性。
+
+缺点是解的多样性使得决策难以确定最终解。
+\section{总结与展望}
+在查询各类资料后，我发现我可以改变遗传算法中的交叉操作和变异操作来改进遗传算法来跳出其局部最优解的缺点。除此之外，我还可以通过融合多个算法来改进算法，我可以利用蚁群算法的扩展性将其与遗传算法结合起来，以减少遗传算法后期冗余的计算操作；可以把遗传算法与局部启发式算法相结合来有效地提高解的质量，在收敛速度和求全局最优之间找到一个平衡点。
+
+综上，尽管目前遗传算法还存在一些缺点，但在经过更多时间的研究后这个算法会不断完善，未来会得到更广泛的应用。
+
+\nocite{*}
+
+\bibliographystyle{cjc}
+\bibliography{example}
+\href{https://github.com/fordiker/code.git}{算法实现Github仓库超链接}
+
+\begin{thebibliography}{20}
+  \bibitem{01}钱敏平,龚光鲁.从数学角度看计算智能[J].科学通报,1998(16):1681-1695.
+  \bibitem{02}徐俊刚,戴国忠,王宏安.生产调度理论和方法研究综述[J].计算机研究与发展,2004,(02):257-267.
+  \bibitem{03}张讲社,徐宗本,梁怡.整体退火遗传算法及其收敛充要条件[J].中国科学E辑:技术科学,1997(02):154-164.
+  \bibitem{04}黄丽. BP神经网络算法改进及应用研究[D].重庆师范大学,2010.
+  \bibitem{05}李兴怡,岳洋.梯度下降算法研究综述[J].软件工程,2020,23(02):1-4.DOI:10.19644/j.cnki.issn2096-1472.2020.02.001.
+  \bibitem{06}杨维,李歧强.粒子群优化算法综述[J].中国工程科学,2004(05):87-94.
+  \bibitem{07}葛继科,邱玉辉,吴春明等.遗传算法研究综述[J].计算机应用研究,2008(10):2911-2916.
+  \bibitem{08}王剑文,戴光明,谢柏桥等.求解TSP问题算法综述[J].计算机工程与科学,2008(02):72-74+155.
+  \bibitem{09}郭平,王可,罗阿理等.大数据分析中的计算智能研究现状与展望[J].软件学报,2015,26(11):3010-3025.DOI:10.13328/j.cnki.jos.004900.
+  \bibitem{10}胡中功,李静.群智能算法的研究进展[J].自动化技术与应用,2008(02):13-15.
+  \bibitem{11}高海昌,冯博琴,朱利b.智能优化算法求解TSP问题[J].控制与决策,2006(03):241-247+252.DOI:10.13195/j.cd.2006.03.3.gaohch.001.
+  \bibitem{12}余建坤,张文彬,陆玉昌.遗传算法及其应用[J].云南民族学院学报(自然科学版),2002(04):193-197.
+  \bibitem{13}焦李成,杨淑媛,刘芳等.神经网络七十年:回顾与展望[J].计算机学报,2016,39(08):1697-1716.
+  \bibitem{14}丁建立,陈增强,袁著祉.遗传算法与蚂蚁算法的融合[J].计算机研究与发展,2003(09):1351-1356.
+  \bibitem{15}马永杰,云文霞.遗传算法研究进展[J].计算机应用研究,2012,29(04):1201-1206+1210.
+  \bibitem{16}高尚,韩斌,吴小俊等.求解旅行商问题的混合粒子群优化算法[J].控制与决策,2004(11):1286-1289.DOI:10.13195/j.cd.2004.11.86.gaosh.020.
+
+\end{thebibliography}
+
+
 \end{document}
-
-
